@@ -1,0 +1,125 @@
+def create_account(users, user_name, password, initial_balance):
+    new_account = {
+        "user_name": user_name,
+        "password": password,
+        "balance": initial_balance,
+        "expenses": []
+    }
+    users.append(new_account)
+    print("Account is created")
+    print("New Account:")
+    print("User Name: " + new_account["user_name"])
+    print("Password: " + new_account["password"])
+    print("Initial Balance: " + str(new_account["balance"]))
+
+def login_user(users, user_name, password):
+    for user in users:
+        if user_name == user["user_name"] and password == user["password"]:
+            return user_name
+    print("User_name or password is incorrect")
+
+def add_income(users, logged_in_user, amount):
+    for user in users:
+        if logged_in_user == user["user_name"]:
+            user["balance"] += amount
+            print("Income of " + str(amount) + " added to " + logged_in_user + " account")
+            print("Updated Balance for " + user["user_name"] + ": " + str(user["balance"]))
+            return
+    print("User " + logged_in_user + " not found.")
+
+def add_expense(users, logged_in_user, amount):
+    for user in users:
+        
+        if logged_in_user == user["user_name"]:
+            user["expenses"].append(amount)
+            print("Expense of " + str(amount) + " added to " + logged_in_user + " account")
+            print("Updated Expense History for " + logged_in_user + ": " + str(user["expenses"]))
+            return
+    print("User " + logged_in_user + " not found.")
+
+def check_balance(users, logged_in_user):
+    for user in users:
+        if logged_in_user == user["user_name"]:
+            total_income = user.get("balance")
+            total_expenses = sum(user.get("expenses"))
+            remaining_balance = total_income - total_expenses
+            print("Balance for " + logged_in_user + ": " + str(remaining_balance))
+            return
+    print("User " + logged_in_user + " not found.")
+
+def logout(logged_in_user):
+    if logged_in_user:
+        print(logged_in_user + " has logged out")
+    else:
+        print("No user is currently logged in")
+
+def user_interface():
+    print("Welcome to expense tracker")
+    print("1. Create account")
+    print("2. Login user")
+    print("3. Exit")
+
+def logged_in_menu():
+    print("Logged in Menu:")
+    print("4. Add Income")
+    print("5. Add Expense")
+    print("6. Check Balance")
+    print("7. Logout")
+    print("8. Exit App")
+
+def run():
+    users = []
+    logged_in_user = None
+
+    while True:
+        user_interface()
+        choice = input("Choose from the options: ")
+
+        if choice == "1":
+            user_name = input("Enter user name: ")
+            password = input("Enter your password: ")
+            initial_balance = float(input("Enter initial balance: "))
+            create_account(users, user_name, password, initial_balance)
+
+        elif choice == "2":
+            entered_user_name = input("Enter user name:")
+            entered_password = input("Enter password:")
+            logged_in_user = login_user(users, entered_user_name, entered_password)
+            if logged_in_user:
+                print(logged_in_user + " has logged in")
+                while True:
+                    logged_in_menu()
+                    logged_in_choice = input("Choose from the options: ")
+
+                    if logged_in_choice == "4":
+                        income_amount = float(input("Enter the income amount: "))
+                        add_income(users, logged_in_user, income_amount)
+
+                    elif logged_in_choice == "5":
+                        expense_amount = float(input("Enter the expense amount: "))
+                        add_expense(users, logged_in_user, expense_amount)
+
+                    elif logged_in_choice == "6":
+                        check_balance(users, logged_in_user)
+
+                    elif logged_in_choice == "7":
+                        logout(logged_in_user)
+                        logged_in_user = None
+                        break
+
+                    elif logged_in_choice == "8":
+                        print("Exit App")
+                        return
+
+                    else:
+                        print("Invalid choice")
+
+        elif choice == "3":
+            print("Exit")
+            break
+
+        else:
+            print("Please log in first.")
+
+
+run()
